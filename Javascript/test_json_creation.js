@@ -6,7 +6,9 @@ var xml2js = require('xml2js');
 /* Set Test Data for api POST */
 var apiTestData = [
     {'title':'foo','body':'bar','userId':1},
-    {'title':'api input','body':'My second line','userId':2}
+    {'title':'api input','body':'My second line','userId':2},
+	{'title':'foo','body':'bar','userId':3},
+    {'title':'api input','body':'My second line','userId':4}
 ];
 
 /* Loop through each item an call API POST function */
@@ -26,35 +28,64 @@ var getApiData = function(strBody, callBack) {
     console.log(strBody);  // Testing that I received the correct string to POST
 
 	/* FIXME: This is NOT waiting on the callBack but is moving to the next list item*/
-	httpRequest.post(
-		{
-			url: "https://jsonplaceholder.typicode.com/posts",
-			headers: {
-				"Content-Type": "application/json;charset=UTF-8"
-			},
-            body: JSON.stringify(strBody),
-			strictSSL: false
+	// httpRequest.post(
+	// 	{
+	// 		url: "https://jsonplaceholder.typicode.com/posts",
+	// 		headers: {
+	// 			"Content-Type": "application/json;charset=UTF-8"
+	// 		},
+    //         body: JSON.stringify(strBody),
+	// 		strictSSL: false
 
-		}, function (error, response, body) {
-				if (error) {
-					// return error.toStrin();
-					callBack(error.toString());
-					// console.log(error.toString());
+	// 	}, function handleResponse(error, response, body){
+	// 			if (error) {
+	// 				// return error.toStrin();
+	// 				callBack(error.toString());
+	// 				// console.log(error.toString());
 
-				}
-				else if (response.statusCode == 201) {
-                    // console.log(body);
-					callBack(body);
-					// return body;
-				}
-				else {
-                    // console.log("There was another error");
-					callBack("There was another error");
-					// return "There was another error";
-				}
+	// 			}
+	// 			else if (response.statusCode == 201) {
+    //                 // console.log(body);
+	// 				callBack(body);
+	// 				// return body;
+	// 			}
+	// 			else {
+    //                 // console.log("There was another error");
+	// 				callBack("There was another error");
+	// 				// return "There was another error";
+	// 			}
+	// 		}
+	// 	); 
+
+	var options = {
+		method: "POST",
+		url: "https://jsonplaceholder.typicode.com/posts",
+		headers: {
+			"Content-Type": "application/json;charset=UTF-8"
+		},
+		body: JSON.stringify(strBody),
+		strictSSL: false,
+		// rejectUnauthorized: verifyCerts
+	};
+
+	httpRequest(options,
+		function handleResponse(err, response, body){
+			var errMessage = null;	
+			
+			/* check for error */
+			if (err) {
+				callBack(err)
 			}
-		); 
-
+			else if (response.statusCode == 201) {
+				callBack(body);	
+			}
+			else {
+				errMessage='HTTP ' + response.statusCode + ' ERROR: ' + err
+				callBack(errMessage);	
+			}
+			
+		}
+	);
 	
 };
 
