@@ -13,6 +13,7 @@ var apiTestData = [
 function listApiCallData(){
     for (let i=0; i<apiTestData.length; i++) {
         
+		// Call the api function and return the results
 		getApiData(apiTestData[i], function(b){
 			console.log(b);
 		});
@@ -25,10 +26,8 @@ var getApiData = function(strBody, callBack) {
     console.log(strBody);  // Testing that I received the correct string to POST
 
 	/* FIXME: This is NOT waiting on the callBack but is moving to the next list item*/
-	var options = {
-			method: 'POST',
-	// httpRequest.post(
-	// 	{
+	httpRequest.post(
+		{
 			url: "https://jsonplaceholder.typicode.com/posts",
 			headers: {
 				"Content-Type": "application/json;charset=UTF-8"
@@ -36,8 +35,7 @@ var getApiData = function(strBody, callBack) {
             body: JSON.stringify(strBody),
 			strictSSL: false
 
-		};
-		httpRequest(options, function (error, response, body) {
+		}, function (error, response, body) {
 				if (error) {
 					// return error.toStrin();
 					callBack(error.toString());
